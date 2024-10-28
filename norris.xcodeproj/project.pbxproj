@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		BC7AD0E12CCDF67D00EC4F70 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC7AD0E02CCDF67D00EC4F70 /* main.cpp */; };
+		BC7AD0F62CCE190700EC4F70 /* libcurl.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BC7AD0F32CCE190700EC4F70 /* libcurl.tbd */; };
+		BC7AD0F72CCE190700EC4F70 /* libcurl.3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BC7AD0F42CCE190700EC4F70 /* libcurl.3.tbd */; };
+		BC7AD0F82CCE190700EC4F70 /* libcurl.4.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BC7AD0F52CCE190700EC4F70 /* libcurl.4.tbd */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		BC7AD0DB2CCDF67D00EC4F70 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -20,6 +27,10 @@
 
 /* Begin PBXFileReference section */
 		BC7AD0DD2CCDF67D00EC4F70 /* norris */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = norris; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC7AD0E02CCDF67D00EC4F70 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		BC7AD0F32CCE190700EC4F70 /* libcurl.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcurl.tbd; path = usr/lib/libcurl.tbd; sourceTree = SDKROOT; };
+		BC7AD0F42CCE190700EC4F70 /* libcurl.3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcurl.3.tbd; path = usr/lib/libcurl.3.tbd; sourceTree = SDKROOT; };
+		BC7AD0F52CCE190700EC4F70 /* libcurl.4.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcurl.4.tbd; path = usr/lib/libcurl.4.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -35,6 +46,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC7AD0F62CCE190700EC4F70 /* libcurl.tbd in Frameworks */,
+				BC7AD0F72CCE190700EC4F70 /* libcurl.3.tbd in Frameworks */,
+				BC7AD0F82CCE190700EC4F70 /* libcurl.4.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,6 +59,8 @@
 			isa = PBXGroup;
 			children = (
 				BC7AD0DF2CCDF67D00EC4F70 /* norris */,
+				BC7AD0E02CCDF67D00EC4F70 /* main.cpp */,
+				BC7AD0F22CCE190700EC4F70 /* Frameworks */,
 				BC7AD0DE2CCDF67D00EC4F70 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -55,6 +71,16 @@
 				BC7AD0DD2CCDF67D00EC4F70 /* norris */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		BC7AD0F22CCE190700EC4F70 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BC7AD0F32CCE190700EC4F70 /* libcurl.tbd */,
+				BC7AD0F42CCE190700EC4F70 /* libcurl.3.tbd */,
+				BC7AD0F52CCE190700EC4F70 /* libcurl.4.tbd */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -93,6 +119,7 @@
 				TargetAttributes = {
 					BC7AD0DC2CCDF67D00EC4F70 = {
 						CreatedOnToolsVersion = 16.0;
+						LastSwiftMigration = 1600;
 					};
 				};
 			};
@@ -120,6 +147,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC7AD0E12CCDF67D00EC4F70 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,20 +272,25 @@
 		BC7AD0E52CCDF67D00EC4F70 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = KP2NB9CB6V;
 				ENABLE_HARDENED_RUNTIME = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
 		BC7AD0E62CCDF67D00EC4F70 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = KP2NB9CB6V;
 				ENABLE_HARDENED_RUNTIME = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
