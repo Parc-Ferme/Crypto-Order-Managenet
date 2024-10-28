@@ -1,6 +1,3 @@
-Here’s a README file tailored for a C++ order execution and management system developed in Xcode. It includes instructions and details relevant to using Xcode for building and running the project.
-
-```markdown
 # Order Execution and Management System for Deribit Test
 
 ## Objective
