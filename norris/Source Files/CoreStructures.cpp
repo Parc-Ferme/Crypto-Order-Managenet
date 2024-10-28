@@ -143,7 +143,7 @@ CoreStructures::label (eDirection pValue)
 }
 
 void
-CoreStructures::PrintBuyOrderDetails(String & pResponse)
+CoreStructures::PrintBuyOrderDetails (String & pResponse)
 {
     Json data;
     Json order;
@@ -152,197 +152,140 @@ CoreStructures::PrintBuyOrderDetails(String & pResponse)
     
     order = data["result"]["order"];
     
-    std::cout << "------- Placed Order ------- " << "\n";
+    printf("------- Placed Order -------\n");
     
-    std::cout << "Order Details:\n";
-    std::cout << std::left
-    << std::setw(16) << "Order ID"
-    << std::setw(12) << "Order Type"
-    << std::setw(10) << "State"
-    << std::setw(10) << "Price"
-    << std::setw(12) << "Filled Amt"
-    << std::setw(12) << "Avg Price"
-    << std::setw(10) << "Direction"
-    << std::setw(16) << "Instrument"
-    << std::setw(20) << "Timestamp"
-    << std::endl;
-    
-    std::cout << std::left
-    << std::setw(16) << order.value("order_id", "N/A")
-    << std::setw(12) << order.value("order_type", "N/A")
-    << std::setw(10) << order.value("order_state", "N/A")
-    << std::setw(10) << order.value("price", 0.0)
-    << std::setw(12) << order.value("filled_amount", 0)
-    << std::setw(12) << order.value("average_price", 0.0)
-    << std::setw(10) << order.value("direction", "N/A")
-    << std::setw(16) << order.value("instrument_name", "N/A")
-    << std::setw(20) << order.value("creation_timestamp", 0)
-    << std::endl;
+    printf("Order Details:\n");
+    printf("%-16s %-12s %-10s %-10s %-12s %-12s %-10s %-16s %-20s\n",
+        "Order-ID", "Order-Type", "State", "Price",
+        "Filled-Amt", "Avg-Price", "Direction",
+        "Instrument", "Timestamp");
+
+    printf("%-16s %-12s %-10s %-10.2f %-12d %-12.2f %-10s %-16s %-20d\n",
+        order.value("order_id", "N/A").c_str(),
+        order.value("order_type", "N/A").c_str(),
+        order.value("order_state", "N/A").c_str(),
+        order.value("price", 0.0),
+        order.value("filled_amount", 0),
+        order.value("average_price", 0.0),
+        order.value("direction", "N/A").c_str(),
+        order.value("instrument_name", "N/A").c_str(),
+        order.value("creation_timestamp", 0));
 }
 
 void
-CoreStructures::PrintOrderBook(String & pResponse)
+CoreStructures::PrintOrderBook (String & pResponse)
 {
-    
-        Json data;
-        Json result;
-        Json bids;
+    Json data;
+    Json result;
+    Json bids;
     
     data = Json::parse (pResponse);
     
     result = data["result"];
     bids   = result["bids"];
     
-    std::cout << "Main Order Details:\n";
-    std::cout << std::left
-    << std::setw(20) << "Instrument Name"
-    << std::setw(15) << "State"
-    << std::setw(15) << "Settle Price"
-    << std::setw(15) << "Open Interest"
-    << std::setw(15) << "Min Price"
-    << std::setw(15) << "Max Price"
-    << std::setw(15) << "Mark Price"
-    << std::setw(15) << "Last Price"
-    << std::setw(15) << "Index Price"
-    << std::setw(15) << "Funding 8H"
-    << std::setw(15) << "Current Fund"
-    << std::setw(15) << "Change ID"
-    << std::endl;
+    printf("Main Order Details:\n");
+    printf("%-20s %-15s %-15s %-15s %-15s %-15s %-15s %-15s %-15s %-15s %-15s\n",
+        "Instrument-Name", "State", "Settle-Price", "Open-Interest",
+        "Min-Price", "Max-Price", "Mark-Price",
+        "Last-Price", "Index-Price", "Funding 8H",
+        "Current-Fund", "Change-ID");
+
+    printf("%-20s %-15s %-15.2f %-15.2f %-15.2f %-15.2f %-15.2f %-15.2f %-15.2f %-15.2f %-15.2f\n",
+        result.value("instrument_name", "N/A").c_str(),
+        result.value("state", "N/A").c_str(),
+        result.value("settlement_price", 0.0),
+        result.value("open_interest", 0.0),
+        result.value("min_price", 0.0),
+        result.value("max_price", 0.0),
+        result.value("mark_price", 0.0),
+        result.value("last_price", 0.0),
+        result.value("index_price", 0.0),
+        result.value("funding_8h", 0.0),
+        result.value("current_funding", 0.0),
+        result.value("change_id", 0));
     
-    std::cout << std::left
-    << std::setw(20) << result.value("instrument_name", "N/A")
-    << std::setw(15) << result.value("state", "N/A")
-    << std::setw(15) << result.value("settlement_price", 0.0)
-    << std::setw(15) << result.value("open_interest", 0.0)
-    << std::setw(15) << result.value("min_price", 0.0)
-    << std::setw(15) << result.value("max_price", 0.0)
-    << std::setw(15) << result.value("mark_price", 0.0)
-    << std::setw(15) << result.value("last_price", 0.0)
-    << std::setw(15) << result.value("index_price", 0.0)
-    << std::setw(15) << result.value("funding_8h", 0.0)
-    << std::setw(15) << result.value("current_funding", 0.0)
-    << std::setw(15) << result.value("change_id", 0)
-    << std::endl;
-    
-    std::cout << "\nBid Details:\n";
-    std::cout << std::left
-    << std::setw(15) << "Bid Price"
-    << std::setw(15) << "Bid Amount"
-    << std::endl;
+    printf("\nBid Details:\n");
+    printf("%-15s %-15s\n", "Bid Price", "Bid Amount");
     
     for (const auto& bid : bids) {
-        
         if (bid.size() >= 2) {
-            
-            std::cout << std::left
-            << std::setw(15) << bid[0].get<double>()  // Bid price
-            << std::setw(15) << bid[1].get<double>()  // Bid amount
-            << std::endl;
+            printf("%-15.2f %-15.2f\n", bid[0].get<double>(), bid[1].get<double>());
         }
     }
 }
 
 void
-CoreStructures::PrintCurrentPosition (String & pResponse)
+CoreStructures::PrintCurrentPosition(String & pResponse)
 {
-        Json data;
-        Json position;
+    Json data;
+    Json position;
     
     data = Json::parse (pResponse);
     
     position = data["result"];
     
-    std::cout << "Position Details:\n";
-    std::cout << std::left
-    << std::setw(15) << "Instrument"
-    << std::setw(10) << "Kind"
-    << std::setw(10) << "Direction"
-    << std::setw(15) << "Avg Price"
-    << std::setw(10) << "Leverage"
-    << std::setw(15) << "Index Price"
-    << std::setw(15) << "Mark Price"
-    << std::setw(15) << "Settle Price"
-    << std::setw(15) << "Size"
-    << std::setw(15) << "Size Curr"
-    << std::setw(15) << "Init Margin"
-    << std::setw(20) << "Maint Margin"
-    << std::setw(15) << "Float P&L"
-    << std::setw(15) << "Total P&L"
-    << std::setw(15) << "Realized P&L"
-    << std::setw(15) << "Realized Fund"
-    << std::setw(20) << "Est Liquid Price"
-    << std::setw(20) << "Open Ord Margin"
-    << std::setw(20) << "Interest Value"
-    << std::endl;
-    
-    std::cout << std::left
-    << std::setw(15) << position.value("instrument_name", "N/A")
-    << std::setw(10) << position.value("kind", "N/A")
-    << std::setw(10) << position.value("direction", "N/A")
-    << std::setw(15) << position.value("average_price", 0.0)
-    << std::setw(10) << position.value("leverage", 0)
-    << std::setw(15) << position.value("index_price", 0.0)
-    << std::setw(15) << position.value("mark_price", 0.0)
-    << std::setw(15) << position.value("settlement_price", 0.0)
-    << std::setw(15) << position.value("size", 0)
-    << std::setw(15) << position.value("size_currency", 0.0)
-    << std::setw(15) << position.value("initial_margin", 0.0)
-    << std::setw(20) << position.value("maintenance_margin", 0.0)
-    << std::setw(15) << position.value("floating_profit_loss", 0.0)
-    << std::setw(15) << position.value("total_profit_loss", 0.0)
-    << std::setw(15) << position.value("realized_profit_loss", 0.0)
-    << std::setw(15) << position.value("realized_funding", 0.0)
-    << std::setw(20) << position.value("estimated_liquidation_price", 0.0)
-    << std::setw(20) << position.value("open_orders_margin", 0.0)
-    << std::setw(20) << position.value("interest_value", 0.0)
-    << std::endl;
+    printf("Position Details:\n");
+    printf("%-15s %-10s %-10s %-15s %-10s %-15s %-15s %-15s %-15s %-15s %-20s %-15s %-15s %-15s %-15s %-20s %-20s %-20s\n",
+        "Instrument", "Kind", "Direction", "Avg Price", "Leverage",
+        "Index Price", "Mark Price", "Settle Price", "Size",
+        "Size Curr", "Init Margin", "Maint Margin",
+        "Float P&L", "Total P&L", "Realized P&L",
+        "Realized Fund", "Est Liquid Price", "Open Ord Margin",
+        "Interest Value");
+
+    printf("%-15s %-10s %-10s %-15.2f %-10d %-15.2f %-15.2f %-15.2f %-15d %-15.2f %-15.2f %-20.2f %-15.2f %-15.2f %-15.2f %-15.2f %-20.2f %-20.2f %-20.2f\n",
+        position.value("instrument_name", "N/A").c_str(),
+        position.value("kind", "N/A").c_str(),
+        position.value("direction", "N/A").c_str(),
+        position.value("average_price", 0.0),
+        position.value("leverage", 0),
+        position.value("index_price", 0.0),
+        position.value("mark_price", 0.0),
+        position.value("settlement_price", 0.0),
+        position.value("size", 0),
+        position.value("size_currency", 0.0),
+        position.value("initial_margin", 0.0),
+        position.value("maintenance_margin", 0.0),
+        position.value("floating_profit_loss", 0.0),
+        position.value("total_profit_loss", 0.0),
+        position.value("realized_profit_loss", 0.0),
+        position.value("realized_funding", 0.0),
+        position.value("estimated_liquidation_price", 0.0),
+        position.value("open_orders_margin", 0.0),
+        position.value("interest_value", 0.0));
 }
 
 void
-CoreStructures::PrintOpenPositions (String & pResponse)
+CoreStructures::PrintOpenPositions(String & pResponse)
 {
-        Json data;
-        Json result;
+    Json data;
+    Json result;
     
     data = Json::parse (pResponse);
     
     result = data["result"];
     
-    std::cout << std::left
-    << std::setw(15) << "Order ID"
-    << std::setw(20) << "Order Type"
-    << std::setw(15) << "State"
-    << std::setw(10) << "Price"
-    << std::setw(15) << "Filled Amt"
-    << std::setw(15) << "Avg Price"
-    << std::setw(10) << "Direction"
-    << std::setw(25) << "Instrument"
-    << std::setw(20) << "Timestamp"
-    << std::setw(20) << "Time In Force"
-    << std::setw(10) << "Reduce Only"
-    << std::setw(10) << "Post Only"
-    << std::setw(15) << "Max Show"
-    << std::setw(10) << "API"
-    << std::endl;
-    
-    
+    printf("%-15s %-20s %-15s %-10s %-15s %-15s %-10s %-25s %-20s %-20s %-10s %-10s %-15s %-10s\n",
+        "Order ID", "Order Type", "State", "Price", "Filled Amt",
+        "Avg Price", "Direction", "Instrument", "Timestamp",
+        "Time In Force", "Reduce Only", "Post Only", "Max Show", "API");
+
     for (Json order : result) {
-        
-        std::cout << std::left
-        << std::setw(15) << order.value("order_id", "N/A")
-        << std::setw(20) << order.value("order_type", "N/A")
-        << std::setw(15) << order.value("order_state", "N/A")
-        << std::setw(10) << order.value("price", 0.0)
-        << std::setw(15) << order.value("filled_amount", 0)
-        << std::setw(15) << order.value("average_price", 0.0)
-        << std::setw(10) << order.value("direction", "N/A")
-        << std::setw(25) << order.value("instrument_name", "N/A")
-        << std::setw(20) << order.value("creation_timestamp", 0)
-        << std::setw(20) << order.value("time_in_force", "N/A")
-        << std::setw(10) << order.value("reduce_only", false)
-        << std::setw(10) << order.value("post_only", false)
-        << std::setw(15) << order.value("max_show", 0)
-        << std::setw(10) << order.value("api", false)
-        << std::endl;
+        printf("%-15s %-20s %-15s %-10.2f %-15d %-15.2f %-10s %-25s %-20d %-20s %-10s %-10s %-15d %-10s\n",
+            order.value("order_id", "N/A").c_str(),
+            order.value("order_type", "N/A").c_str(),
+            order.value("order_state", "N/A").c_str(),
+            order.value("price", 0.0),
+            order.value("filled_amount", 0),
+            order.value("average_price", 0.0),
+            order.value("direction", "N/A").c_str(),
+            order.value("instrument_name", "N/A").c_str(),
+            order.value("creation_timestamp", 0),
+            order.value("time_in_force", "N/A").c_str(),
+            order.value("reduce_only", false),
+            order.value("post_only", false),
+            order.value("max_show", 0),
+            order.value("api", false));
     }
 }

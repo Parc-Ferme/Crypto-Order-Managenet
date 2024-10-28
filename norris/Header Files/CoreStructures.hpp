@@ -1,13 +1,14 @@
 #pragma once
 
-#include <iostream>
-#include <iomanip>
+// C++ Standard Library
+#include <chrono>
 #include <string>
-#include <curl/curl.h>
-#include <fstream>
+
+#include <curl/curl.h> // curl to establish connection // TODO: Change to socket
+
 #include <fcntl.h>    // For open()
-#include <unistd.h> 
-#include "json.hpp"
+#include <unistd.h>   // For read() and close ()
+#include "json.hpp"   // For Json Parsing
 
 using String = std::string;
 
@@ -69,15 +70,15 @@ struct Order {
     eDirection tDirection;
 };
 
-#define CHECKNULL(data)  if ((data) == nullptr) { \
-                                std::cout << #data << " is NULL" << "\n"; \
-                                std::exit(EXIT_FAILURE); \
-                               }\
+#define CHECKNULL(data)  if ((data) == nullptr) {               \
+                                printf("%s is NULL\n", #data);  \
+                                abort();                        \
+                               }                                \
 
-#define CHECKTRUE(condition) if (!(condition)) { \
-                                 std::cerr << #condition << " is false" << std::endl; \
-                                 std::exit(EXIT_FAILURE); \
-                             }
+#define CHECKTRUE(condition) if (!(condition)) {                     \
+                                printf("%s is false\n", #condition); \
+                                abort();                             \
+                             }                                       \
 
 
 class CoreStructures {

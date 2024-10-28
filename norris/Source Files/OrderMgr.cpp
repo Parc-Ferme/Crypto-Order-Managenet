@@ -8,8 +8,11 @@ OrderMgr::InitializeSession ()
 {
         String header;
     
-    if (AuthMgr::Authenticate () == false)
+    if (AuthMgr::Authenticate () == false) {
+        
+        printf ("Authentication isn't successfull, Please the Id and Secret.");
         return false;
+    }
     
     header = "Authorization: Bearer " + AuthMgr::GetAccessToken();
     
@@ -20,13 +23,26 @@ OrderMgr::InitializeSession ()
     return true;
 }
 
-bool
+void
 OrderMgr::EndSession ()
 {
-    return AuthMgr::Invalidate ();
+    AuthMgr::Invalidate ();
 }
 
-void
+bool
+OrderMgr::Validate ()
+{
+        bool retval;
+    
+    retval = AuthMgr::IsTokenValid ();
+    
+    if (retval == false)
+        return AuthMgr::RevalidateAccessToken();
+    
+    return true;
+}
+
+bool
 OrderMgr::PlaceOrder (const Order pOrder)
 {
         bool   retval;
@@ -35,44 +51,78 @@ OrderMgr::PlaceOrder (const Order pOrder)
     
     bufferSize = 256;
     
-    retval = AuthMgr::IsTokenValid ();
+    retval = Validate();
     
-    if (retval == false)
-        AuthMgr::RevalidateAccessToken();
+    if (retval == false) {
+        
+        printf ("Token isn't valid and Revalidation Failed, Please the Id and Secret.");
+        return false;
+    }
     
     if (pOrder.tDirection == eDirection::BUY)
         vOrderPath += "/private/buy?";
     else
         vOrderPath += "/private/sell?";
     
-    snprintf (buffer, bufferSize, "amount=%.2f&instrument_name=%s&label=%s&price=%.2f&type=%s",pOrder.tAmount, pOrder.tInstrumentName.c_str(),
-              pOrder.tLabel.c_str(), pOrder.tPrice, CoreStructures::label(pOrder.tOrderType).c_str());
+    snprintf (buffer, bufferSize, "amount=%.2f&instrument_name=%s&label=%s&price=%.2f&type=%s",pOrder.tAmount,
+              pOrder.tInstrumentName.c_str(), pOrder.tLabel.c_str(), pOrder.tPrice,
+              CoreStructures::label(pOrder.tOrderType).c_str());
         
     vOrderPath += buffer;
 
     HttpRequest::Post (vOrderPath, vResponse);
     
     CoreStructures::PrintBuyOrderDetails(vResponse);
+    
+    return true;
 }
 
-void
+bool
 OrderMgr::CancelOrder(String pOrderID)
 {
+        bool   retval;
+        size_t orderCount;
+    
+    retval = Validate();
+    
+    if (retval == false) {
+        
+        printf ("Token isn't valid and Revalidation Failed, Please the Id and Secret.");
+        return false;
+    }
+    
     vOrderPath += "/private/cancel?order_id=" + pOrderID;
     
     HttpRequest::Post (vOrderPath, vResponse);
     
-    std::cout << "Number of Cancelled Order: \n" << Json::parse(vResponse)["result"] << "\n";
+    orderCount = Json::parse(vResponse)["result"];
+    
+    printf ("Number of Cancelled Order: %zu\n", orderCount);
+    
+    return true;
 }
 
 void
 OrderMgr::CancelAll ()
 {
+        bool   retval;
+        size_t orderCount;
+    
+    retval = Validate();
+    
+    if (retval == false) {
+        
+        printf ("Token isn't valid and Revalidation Failed, Please the Id and Secret.");
+        return;
+    }
+    
     vOrderPath += "/private/cancel_all?";
     
     HttpRequest::Post (vOrderPath, vResponse);
     
-    std::cout << "Number of Cancelled Order: \n" << Json::parse(vResponse)["result"] << "\n";
+    orderCount = Json::parse(vResponse)["result"];
+    
+    printf ("Number of Cancelled Order: %zu\n", orderCount);
 }
 
 void
@@ -80,9 +130,19 @@ OrderMgr::ModifyOrder (String pOrderID, double pAmount, double pPrice)
 {
         char buffer[64];
         size_t bufferSize;
+        bool retval;
     
     bufferSize = 64;
+
+    retval = Validate();
     
+    if (retval == false) {
+        
+        printf ("Token isn't valid and Revalidation Failed, Please the Id and Secret.");
+        return;
+    }
+    
+    //TODO: Error Handling
     snprintf (buffer, bufferSize, "/private/edit?order_id=%s&amount=%.2f&price=%.2f", pOrderID.c_str(), pAmount, pPrice);
     
     vOrderPath += buffer;
@@ -95,6 +155,16 @@ OrderMgr::ModifyOrder (String pOrderID, double pAmount, double pPrice)
 void
 OrderMgr::GetOpenOrders ()
 {
+        bool retval;
+    
+    retval = Validate();
+    
+    if (retval == false) {
+        
+        printf ("Token isn't valid and Revalidation Failed, Please the Id and Secret.");
+        return;
+    }
+    
     vOrderPath += "/private/get_open_orders?";
     
     HttpRequest::Post (vOrderPath, vResponse);
@@ -110,6 +180,7 @@ OrderMgr::GetOrderBook (String pInstrumentName, int pNumEntries)
 
     bufferSize = 64;
 
+    //TODO: Error Handling
     snprintf (buffer, bufferSize, "/public/get_order_book?instrument_name=%s&depth=%u", pInstrumentName.c_str(), pNumEntries);
 
     vOrderPath += buffer;
@@ -117,12 +188,21 @@ OrderMgr::GetOrderBook (String pInstrumentName, int pNumEntries)
     HttpRequest::Post (vOrderPath, vResponse);
     
     CoreStructures::PrintOrderBook (vResponse);
-    
 }
 
 void
 OrderMgr::GetCurrentPosition (eCurrencyType pCurrency, eContractType pContract)
 {
+        bool retval;
+    
+    retval = Validate();
+    
+    if (retval == false) {
+        
+        printf ("Token isn't valid and Revalidation Failed, Please the Id and Secret.");
+        return;
+    }
+    
     vOrderPath += "/private/get_positions?currency=" + CoreStructures::label (pCurrency) + "&kind=" + CoreStructures::label (pContract);
     
     HttpRequest::Post (vOrderPath, vResponse);

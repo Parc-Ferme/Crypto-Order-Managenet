@@ -23,6 +23,10 @@ HttpRequest::Initialize ()
 void
 HttpRequest::Finalize ()
 {
+    // At time of finalization these paramter shouldn't be nullptr.
+    CHECKNULL (vHandle);
+    CHECKNULL (vHeaders);
+    
     curl_easy_cleanup (vHandle);
     curl_slist_free_all (vHeaders);
 }
@@ -31,6 +35,8 @@ void
 HttpRequest::AddHeader (String pHeader)
 {
     vHeaders = curl_slist_append (vHeaders, pHeader.c_str());
+    
+    CHECKNULL (vHeaders);
 }
 
 bool
@@ -41,8 +47,9 @@ HttpRequest::Post (String pPath, String & pResponse)
     
     path = vBaseURL + pPath;
     
+    //TODO: Handle return value (returns CURLE_OK if its success).
     curl_easy_setopt (vHandle, CURLOPT_URL, path.c_str ());
-    
+
     curl_easy_setopt (vHandle, CURLOPT_HTTPHEADER, vHeaders);
     
     curl_easy_setopt (vHandle, CURLOPT_WRITEFUNCTION, Callback);
@@ -51,7 +58,7 @@ HttpRequest::Post (String pPath, String & pResponse)
     vReturnCode = curl_easy_perform (vHandle);
     
     if(vReturnCode != CURLE_OK) {
-        std::cout << "Request Failed: " << curl_easy_strerror (vReturnCode) << std::endl;
+        printf("Request Failed: %s\n", curl_easy_strerror (vReturnCode));
         return false;
     }
     

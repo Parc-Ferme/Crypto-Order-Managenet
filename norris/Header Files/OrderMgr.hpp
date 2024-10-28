@@ -8,11 +8,13 @@ public:
     
     static bool InitializeSession  ();
     
-    static bool EndSession         ();
+    static void EndSession         ();
     
-    static void PlaceOrder         (const Order pOrder);
+    static bool Validate           ();
     
-    static void CancelOrder        (String pOrderID);
+    static bool PlaceOrder         (const Order pOrder);
+    
+    static bool CancelOrder        (String pOrderID);
     
     static void CancelAll          ();
     

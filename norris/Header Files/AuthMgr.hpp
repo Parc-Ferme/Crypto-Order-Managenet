@@ -6,7 +6,7 @@ class AuthMgr {
     
 public:
     static bool   Authenticate          ();
-    static bool   Invalidate            ();
+    static void   Invalidate            ();
     static bool   RevalidateAccessToken ();
     static String GetAccessToken        ();
     static String ReadFile              (String pPath);
