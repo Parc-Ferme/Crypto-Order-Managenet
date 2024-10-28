@@ -1,5 +1,6 @@
 #include "OrderMgr.hpp"
 
+
 int main()
 {
     OrderMgr::InitializeSession();
@@ -12,7 +13,7 @@ int main()
 
      OrderMgr::GetCurrentPosition(eCurrencyType::BTC, eContractType::FUTURE);
 
-    OrderMgr::CancelOrder("ETH-14387089701");
+    OrderMgr::CancelOrder("ETH-14387620102");
 
     OrderMgr::ModifyOrder("ETH-14386879208", 3, 2300);
     

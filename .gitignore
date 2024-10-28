@@ -1,0 +1,5 @@
+*.xcodeproj/
+DerivedData/
+
+clientKey.txt
+clientSecret.txt
