@@ -20,8 +20,6 @@ public:
     
     static void ModifyOrder        (String pOrderID, double pAmount, double pPrice);
     
-    static void GetOpenOrders      ();
-    
     static void GetOrderBook       (String pInstrumentName, int pNumEntries = 10);
     
     static void GetCurrentPosition (eCurrencyType pCurrency, eContractType pContract);

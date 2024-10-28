@@ -37,7 +37,7 @@ OrderMgr::Validate ()
     retval = AuthMgr::IsTokenValid ();
     
     if (retval == false)
-        return AuthMgr::RevalidateAccessToken();
+        return AuthMgr::RevalidateAccessToken ();
     
     return true;
 }
@@ -48,10 +48,14 @@ OrderMgr::PlaceOrder (const Order pOrder)
         bool   retval;
         char   buffer[256];
         size_t bufferSize;
+        String URL;
     
     bufferSize = 256;
+    URL = vOrderPath;
     
-    retval = Validate();
+    vResponse.clear();
+    
+    retval = Validate ();
     
     if (retval == false) {
         
@@ -60,28 +64,35 @@ OrderMgr::PlaceOrder (const Order pOrder)
     }
     
     if (pOrder.tDirection == eDirection::BUY)
-        vOrderPath += "/private/buy?";
+        URL += "/private/buy?";
     else
-        vOrderPath += "/private/sell?";
+        URL += "/private/sell?";
     
     snprintf (buffer, bufferSize, "amount=%.2f&instrument_name=%s&label=%s&price=%.2f&type=%s",pOrder.tAmount,
               pOrder.tInstrumentName.c_str(), pOrder.tLabel.c_str(), pOrder.tPrice,
-              CoreStructures::label(pOrder.tOrderType).c_str());
+              Primitves::label(pOrder.tOrderType).c_str());
         
-    vOrderPath += buffer;
+    URL += buffer;
 
-    HttpRequest::Post (vOrderPath, vResponse);
+    HttpRequest::Post (URL, vResponse);
     
-    CoreStructures::PrintBuyOrderDetails(vResponse);
-    
+    if (Primitves::CheckResponse (vResponse))
+        return false;
+        
+    Primitves::PrintOrderDetails (vResponse);
+
     return true;
 }
 
 bool
-OrderMgr::CancelOrder(String pOrderID)
+OrderMgr::CancelOrder (String pOrderID)
 {
         bool   retval;
-        size_t orderCount;
+        String URL;
+    
+    URL = vOrderPath;
+    
+    vResponse.clear();
     
     retval = Validate();
     
@@ -91,13 +102,14 @@ OrderMgr::CancelOrder(String pOrderID)
         return false;
     }
     
-    vOrderPath += "/private/cancel?order_id=" + pOrderID;
+    URL += "/private/cancel?order_id=" + pOrderID;
     
-    HttpRequest::Post (vOrderPath, vResponse);
+    HttpRequest::Post (URL, vResponse);
     
-    orderCount = Json::parse(vResponse)["result"];
-    
-    printf ("Number of Cancelled Order: %zu\n", orderCount);
+    if (Primitves::CheckResponse (vResponse))
+        return false;
+
+    Primitves::PrintCancelOrderDetail (vResponse);
     
     return true;
 }
@@ -106,9 +118,13 @@ void
 OrderMgr::CancelAll ()
 {
         bool   retval;
-        size_t orderCount;
+        String URL;
     
-    retval = Validate();
+    URL = vOrderPath;
+    
+    vResponse.clear();
+    
+    retval = Validate ();
     
     if (retval == false) {
         
@@ -116,23 +132,28 @@ OrderMgr::CancelAll ()
         return;
     }
     
-    vOrderPath += "/private/cancel_all?";
+    URL += "/private/cancel_all?";
     
-    HttpRequest::Post (vOrderPath, vResponse);
+    HttpRequest::Post (URL, vResponse);
     
-    orderCount = Json::parse(vResponse)["result"];
+    if (Primitves::CheckResponse (vResponse))
+        return;
     
-    printf ("Number of Cancelled Order: %zu\n", orderCount);
+    Primitves::PrintCancelOrderCount (vResponse);
 }
 
 void
 OrderMgr::ModifyOrder (String pOrderID, double pAmount, double pPrice)
 {
-        char buffer[64];
+        char   buffer[64];
         size_t bufferSize;
-        bool retval;
+        bool   retval;
+        String URL;
     
     bufferSize = 64;
+    URL = vOrderPath;
+    
+    vResponse.clear();
 
     retval = Validate();
     
@@ -142,58 +163,55 @@ OrderMgr::ModifyOrder (String pOrderID, double pAmount, double pPrice)
         return;
     }
     
-    //TODO: Error Handling
+    // I have set the buffer size to 64 based on my estimation of the maximum required capacity.
+    // Therefore, I did not include any additional checks
     snprintf (buffer, bufferSize, "/private/edit?order_id=%s&amount=%.2f&price=%.2f", pOrderID.c_str(), pAmount, pPrice);
     
-    vOrderPath += buffer;
+    URL += buffer;
     
-    HttpRequest::Post (vOrderPath, vResponse);
+    HttpRequest::Post (URL, vResponse);
     
-    CoreStructures::PrintBuyOrderDetails (vResponse);
-}
-
-void
-OrderMgr::GetOpenOrders ()
-{
-        bool retval;
-    
-    retval = Validate();
-    
-    if (retval == false) {
-        
-        printf ("Token isn't valid and Revalidation Failed, Please the Id and Secret.");
+    if (Primitves::CheckResponse (vResponse))
         return;
-    }
     
-    vOrderPath += "/private/get_open_orders?";
-    
-    HttpRequest::Post (vOrderPath, vResponse);
-    
-    CoreStructures::PrintOpenPositions (vResponse);
+    Primitves::PrintOrderDetails (vResponse);
 }
 
 void
 OrderMgr::GetOrderBook (String pInstrumentName, int pNumEntries)
 {
-        char buffer[64];
+        char   buffer[64];
         size_t bufferSize;
+        String URL;
 
     bufferSize = 64;
+    URL = vOrderPath;
+    
+    vResponse.clear ();
 
-    //TODO: Error Handling
+    // I have set the buffer size to 64 based on my estimation of the maximum required capacity.
+    // Therefore, I did not include any additional checks
     snprintf (buffer, bufferSize, "/public/get_order_book?instrument_name=%s&depth=%u", pInstrumentName.c_str(), pNumEntries);
 
-    vOrderPath += buffer;
+    URL += buffer;
     
-    HttpRequest::Post (vOrderPath, vResponse);
+    HttpRequest::Post (URL, vResponse);
     
-    CoreStructures::PrintOrderBook (vResponse);
+    if (Primitves::CheckResponse (vResponse))
+        return;
+    
+    Primitves::PrintOrderBook (vResponse);
 }
 
 void
 OrderMgr::GetCurrentPosition (eCurrencyType pCurrency, eContractType pContract)
 {
         bool retval;
+        String URL;
+    
+    URL = vOrderPath;
+    
+    vResponse.clear();
     
     retval = Validate();
     
@@ -203,9 +221,13 @@ OrderMgr::GetCurrentPosition (eCurrencyType pCurrency, eContractType pContract)
         return;
     }
     
-    vOrderPath += "/private/get_positions?currency=" + CoreStructures::label (pCurrency) + "&kind=" + CoreStructures::label (pContract);
+    URL += "/private/get_positions?currency=" + Primitves::label (pCurrency) + "&kind=" +
+            Primitves::label (pContract);
     
-    HttpRequest::Post (vOrderPath, vResponse);
+    HttpRequest::Post (URL, vResponse);
     
-    CoreStructures::PrintCurrentPosition (vResponse);
+    if (Primitves::CheckResponse (vResponse))
+        return;
+    
+    Primitves::PrintCurrentPosition (vResponse);
 }

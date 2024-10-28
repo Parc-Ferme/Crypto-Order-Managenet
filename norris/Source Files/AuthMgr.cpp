@@ -20,7 +20,8 @@ AuthMgr::Authenticate ()
     vClientKey    = ReadFile ("/Users/ankit/Desktop/norris/clientKey.txt");
     vClientSecret = ReadFile ("/Users/ankit/Desktop/norris/clientSecret.txt");
     
-    pathUrl = "/api/v2/public/auth?client_id=" + vClientKey + "&client_secret=" + vClientSecret + "&grant_type=client_credentials";
+    pathUrl = "/api/v2/public/auth?client_id=" + vClientKey + "&client_secret=" +
+               vClientSecret + "&grant_type=client_credentials";
     
     retval = HttpRequest::Post (pathUrl, response);
     
@@ -56,7 +57,8 @@ AuthMgr::RevalidateAccessToken ()
         bool   retval;
         Json   parsedJSON;
     
-    pathurl = "/api/v2/public/auth?grant_type=refresh_token&refresh_token=" + vRefreshToken + "&client_id=" + vClientKey + "&client_secret=" + vClientSecret;
+    pathurl = "/api/v2/public/auth?grant_type=refresh_token&refresh_token=" + vRefreshToken +
+              "&client_id=" + vClientKey + "&client_secret=" + vClientSecret;
     
     retval = HttpRequest::Post (pathurl, response);
     
@@ -71,6 +73,8 @@ AuthMgr::RevalidateAccessToken ()
     expireIn      = parsedJSON["result"]["expires_in"];
     
     vExpireTime = Clock::now () + Time(expireIn);
+    
+    HttpRequest::AddHeader ("Authorization: Bearer " + vAccessToken);
     
     return true;
 }
@@ -131,5 +135,5 @@ AuthMgr::ReadFile (String pPath)
 bool
 AuthMgr::IsTokenValid ()
 {
-    return Clock::now () >= vExpireTime;
+    return !(Clock::now () >= vExpireTime);
 }

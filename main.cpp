@@ -4,21 +4,19 @@ int main()
 {
     OrderMgr::InitializeSession();
     
-    //Order buyOrder {"BTC-PERPETUAL", 20, eOrderType::LIMIT, "first-order", 67000.50, eValidity::GOOD_TILL_DAY, eDirection::BUY};
+    Order buyOrder {"ETH-PERPETUAL", 2, eOrderType::LIMIT, "Market1", 2320, eValidity::GOOD_TILL_CANCELLED, eDirection::BUY};
 
-    //OrderMgr::PlaceOrder(buyOrder);
+    OrderMgr::PlaceOrder (buyOrder);
 
-    OrderMgr::GetOrderBook("BTC-PERPETUAL");
-//
-//    OrderMgr::GetCurrentPosition(eCurrencyType::BTC, eContractType::FUTURE);
-//    
-//    OrderMgr::CancelOrder("29207060941");
-//    
-//    OrderMgr::ModifyOrder("29203747664", 15, 68000);
-//    
-//    OrderMgr::CancelAll();
-//    
-//    OrderMgr::GetOpenOrders();
+    OrderMgr::GetOrderBook("ETH-PERPETUAL");
+
+     OrderMgr::GetCurrentPosition(eCurrencyType::BTC, eContractType::FUTURE);
+
+    OrderMgr::CancelOrder("ETH-14387089701");
+
+    OrderMgr::ModifyOrder("ETH-14386879208", 3, 2300);
+    
+    OrderMgr::CancelAll();
     
     return 0;
 }

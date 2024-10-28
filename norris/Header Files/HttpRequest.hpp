@@ -1,10 +1,11 @@
 #pragma once
 
-#include "CoreStructures.hpp"
+#include "Primitves.hpp"
 
 class HttpRequest {
     
 public:
+    
     static void   Initialize ();
     
     static void   Finalize   ();

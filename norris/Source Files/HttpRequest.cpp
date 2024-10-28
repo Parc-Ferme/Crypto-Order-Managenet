@@ -47,7 +47,6 @@ HttpRequest::Post (String pPath, String & pResponse)
     
     path = vBaseURL + pPath;
     
-    //TODO: Handle return value (returns CURLE_OK if its success).
     curl_easy_setopt (vHandle, CURLOPT_URL, path.c_str ());
 
     curl_easy_setopt (vHandle, CURLOPT_HTTPHEADER, vHeaders);
@@ -58,6 +57,7 @@ HttpRequest::Post (String pPath, String & pResponse)
     vReturnCode = curl_easy_perform (vHandle);
     
     if(vReturnCode != CURLE_OK) {
+        
         printf("Request Failed: %s\n", curl_easy_strerror (vReturnCode));
         return false;
     }

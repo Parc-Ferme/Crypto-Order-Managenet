@@ -1,10 +1,11 @@
 #pragma once
 
 // C++ Standard Library
+#include <iostream>
 #include <chrono>
 #include <string>
 
-#include <curl/curl.h> // curl to establish connection // TODO: Change to socket
+#include <curl/curl.h> // curl to establish connection
 
 #include <fcntl.h>    // For open()
 #include <unistd.h>   // For read() and close ()
@@ -81,16 +82,24 @@ struct Order {
                              }                                       \
 
 
-class CoreStructures {
+class Primitves {
     
 public:
     
     template <typename enumType>
-    static String label               (enumType pValue);
+    static String label                  (enumType pValue);
     
-    static void PrintBuyOrderDetails  (String & pResponse);
-    static void PrintSellOrderDetails (String & pResponse);
-    static void PrintOrderBook        (String & pResponse);
-    static void PrintOpenPositions    (String & pResponse);
-    static void PrintCurrentPosition  (String & pResponse);
+    static void   PrintOrderDetails      (String & pResponse);
+    
+    static void   PrintOrderBook         (String & pResponse);
+    
+    static void   PrintCurrentPosition   (String & pResponse);
+      
+    static void   PrintCancelOrderCount  (String & pResponse);
+      
+    static void   PrintCancelOrderDetail (String & pResponse);
+      
+    static bool   CheckResponse          (String & pResponse);
+    
+    static String FormatTimestamp        (long long pTimestamp);
 };
